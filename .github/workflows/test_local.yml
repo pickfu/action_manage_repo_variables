@@ -1,0 +1,39 @@
+name: 'build-test'
+on: # rebuild any PRs and main branch changes
+  pull_request:
+  push:
+    branches:
+      - main
+      - 'releases/*'
+
+jobs:
+  build: # make sure build/ci work properly
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: action_manage_repo_variables
+      - uses: ./action_manage_repo_variables
+        run: |
+          npm install
+      - uses: ./action_manage_repo_variables
+        run: |
+          npm run all
+  test: # make sure the action works on a clean machine without building
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: action_manage_repo_variables
+      - working-directory: ./action_manage_repo_variables
+        run: |
+          npm install
+          npm run build && npm run package
+      - uses: ./action_manage_repo_variables
+        with:
+          github_token: ${{ the_token }}
+          repo: pickfu/phoenix
+          environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'sandbox' }}
+          action: update
+          name: LATEST_DEPLOYED_COMMIT_SURVEYS
+          value: 'yadayada'

@@ -1,0 +1,30 @@
+name: 'Manage Repository Variables'
+description: 'Manage repository environment variables'
+author: 'Raúl Juárez'
+inputs:
+  github_token:
+    required: true
+    description: 'The GitHub token to use for authentication'
+  repo:
+    required: true
+    description: 'The GitHub repository to use in the format owner/repo'
+  environment:
+    required: true
+    description: 'The environment in which to read or update the variable'
+  action:
+    required: true
+    description: 'Action to perform. Either "read" or "update"'
+    default: 'read'
+  name:
+    required: true
+    description: 'The name of the variable'
+    default: 'read'
+  value:
+    required: false
+    description: 'The value of the variable to update'
+outputs:
+  value:
+    description: 'The value of the variable'
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
